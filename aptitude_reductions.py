@@ -8,7 +8,7 @@
 import os, sys
 
 # Paths, where can be aptitude
-a_paths = ['/usr/bin/aptitude2', '/bin/aptitude', '/usr/local/bin/aptitude']
+a_paths = ['/usr/bin/aptitude', '/bin/aptitude', '/usr/local/bin/aptitude']
 
 # 
 cmds = {
