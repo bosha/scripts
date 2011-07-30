@@ -43,7 +43,7 @@ def check_inst_aptitude():
             raise Exception('There is no aptitude installed! Install it first!')
 
 def show_help():
-    print "Following \"Shortcuts\" can be used: \n\
+    print "Following \"reductions\" can be used: \n\
 ============================= \n\
 i     -- install \n\
 ri    -- reinstall \n\
