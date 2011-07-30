@@ -70,6 +70,7 @@ wn    -- wny-not \n\
 
 if len(sys.argv) == 1:
     os.system('sudo aptitude')
+    sys.exit(0)
 
 if len(sys.argv) == 2:
     # No need to check if we only show help or usage
