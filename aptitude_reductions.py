@@ -69,7 +69,7 @@ wn    -- wny-not \n\
 ============================= "
 
 if len(sys.argv) == 1:
-    show_help()
+    os.system('sudo aptitude')
 
 if len(sys.argv) == 2:
     # No need to check if we only show help or usage
