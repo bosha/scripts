@@ -68,13 +68,14 @@ w     -- why \n\
 wn    -- wny-not \n\
 ============================= "
 
+# Check installed aptitude or not
+check_inst_aptitude()
+
 if len(sys.argv) == 1:
     os.system('sudo aptitude')
     sys.exit(0)
 
 if len(sys.argv) == 2:
-    # No need to check if we only show help or usage
-    check_inst_aptitude()
     for k, v in cmds.iteritems():
         if sys.argv[1] == k:
             cmd = "sudo aptitude " + v
@@ -83,12 +84,15 @@ if len(sys.argv) == 2:
     else:
         show_help()
 else:
-    # No need to check if we only show help or usage
     check_inst_aptitude()
 
     for k, v in cmds.iteritems():
         if sys.argv[1] == k:
-            cmd = "sudo aptitude " + v + " " + sys.argv[2]
+            for arg in sys.argv:
+                progs = sys.argv[2]
+                progs = progs + " " + arg
+            cmd = "sudo aptitude " + v + " " + progs
+            print cmd
             os.system(cmd)
             sys.exit(0)
     else: 
