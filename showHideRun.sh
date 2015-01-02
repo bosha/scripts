@@ -1,4 +1,12 @@
 #!/bin/bash
+# -----------------------------------------------------------------------------
+# showHideRun.sh
+# -----------------------------------------------------------------------------
+# Search window by class: if found - activate them, else - run
+# -----------------------------------------------------------------------------
+# Author: Bosha
+# Website: http://the-bosha.ru
+# -----------------------------------------------------------------------------
 
 ( ! which xdotool &>/dev/null || ! which wmctrl &>/dev/null ) \
     && echo "No xdotool or wmctrl found in system" && exit 1

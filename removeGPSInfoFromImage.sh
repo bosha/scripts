@@ -1,4 +1,12 @@
 #!/bin/bash
+# -----------------------------------------------------------------------------
+# removeGPSInfoFromImage.sh
+# -----------------------------------------------------------------------------
+# Remove GPS information from given images or directories with images
+# -----------------------------------------------------------------------------
+# Author: Bosha
+# Website: http://the-bosha.ru
+# -----------------------------------------------------------------------------
 
 ( ! which exiftool &>/dev/null ) \
     && echo "No exiftool found in your system!" && exit 1;
