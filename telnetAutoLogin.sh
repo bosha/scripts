@@ -14,15 +14,17 @@
 
 default_terminal="xfce4-terminal"
 
-( ! which expect &> /dev/null ) \
-    && echo "No expect found in system." && exit 1
+have () {
+    (which "$1" &> /dev/null) \
+        && return 0 || return 1
+}
 
 notify () {
     [[ -z "$osdnotify" ]] && echo "$1" || notify_send "$1"
 }
 
 notify_send () {
-    if (which notify-send &>/dev/null) ; then
+    if (have "notify-send") ; then
         notify-send "Telnet" "$1" \
             -u normal \
             -i gtk-dialog-warning \
@@ -54,6 +56,7 @@ EOF
 }
 
 spawn_telnet () {
+    local term="$1"
     local host="$2"
     local user="$3"
     local pass="$4"
@@ -71,13 +74,15 @@ spawn_telnet () {
     interact
     "
 
-    $($1 --geometry 120x30+30+20 \
-         --title "Telnet to "$host"" \
-         --execute expect -c "$commands"
+    $($term --geometry 120x30+30+20 \
+            --title "Telnet to "$host"" \
+            --execute expect -c "$commands"
     )
 }
 
 main() {
+
+    ( ! have "expect") && die "No expect found in system"
 
     [[ -z "$username" ]] || [[ -z "$password" ]] \
         && die "Username/password not specified"
@@ -86,7 +91,7 @@ main() {
         && die ""$hostname" not available"
 
     if [[ -z "$terminal" ]]; then
-        if ( ! which "$default_terminal" &> /dev/null ); then
+        if ( ! have "$default_terminal" ); then
             die "Could not find default terminal, no terminal specified also"
         else
             spawn_telnet "$default_terminal" "$hostname" "$username" "$password"
@@ -133,4 +138,4 @@ do
     esac
 done
 
-main $@
+main
