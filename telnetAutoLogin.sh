@@ -43,7 +43,7 @@ usage() {
 cat << EOF
 usage: "$0" -u USER -p PASS [OPTIONS]
 
-Simple script for managing nginx virtual hosts.
+Script to automatically login via telnet
 
 OPTIONS:
 -h, --help            Show this help
