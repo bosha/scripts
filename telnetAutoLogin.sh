@@ -1,9 +1,8 @@
 #!/bin/bash
 # -----------------------------------------------------------------------------
-# autoLoginToSwitch.sh
+# telnetAutoLogin.sh
 # -----------------------------------------------------------------------------
-# Script for auto-login for some
-# routers/switches (Cisco, D-Link for example)
+# Telnet auto login script
 #
 # Use --help key to see how to use it.
 #
@@ -97,7 +96,11 @@ main() {
             spawn_telnet "$default_terminal" "$hostname" "$username" "$password"
         fi
     else
-        spawn_telnet "$terminal" "$hostname" "$username" "$password"
+        if ( ! have "$terminal" ); then
+            die "Seems like "$terminal" not installed"
+        else
+            spawn_telnet "$terminal" "$hostname" "$username" "$password"
+        fi
     fi
 
 }
