@@ -1,0 +1,102 @@
+#!/bin/bash
+# -----------------------------------------------------------------------------
+# temperatureCheck
+# -----------------------------------------------------------------------------
+# Check temperature and notify if specified threshold reached
+#
+# Use --help key to see how to use it.
+#
+# -----------------------------------------------------------------------------
+# Author: Bosha
+# Website: http://the-bosha.ru
+# -----------------------------------------------------------------------------
+
+CHIP="k10temp-*"
+NUM="1"
+MAX="100"
+EMAIL=""
+
+have () {
+    (which "$1" &> /dev/null) \
+        && return 0 || return 1
+}
+
+notify () {
+    local MSG="$1"
+    if [[ ! -z "$EMAIL" ]]; then
+        ( ! have "mail" ) && notify_send "No sendmail found. Probably, no mailutils installed" && exit 1
+        echo "$MSG" | mail -s "Maximum temperature reached!" "$EMAIL"
+    fi
+    [[ -z "$osdnotify" ]] && echo "$MSG" || notify_send "$MSG"
+}
+
+notify_send () {
+    if (have "notify-send") ; then
+        notify-send "Temperature monitor" "$1" \
+            -u normal \
+            -i gtk-dialog-warning \
+            -t 8000
+    else
+        echo "$1"
+    fi
+}
+
+die() {
+    notify "$1"
+        [[ -z "$2" ]] && exit 1 || exit "$2"
+}
+
+usage() {
+cat << EOF
+usage: "$0" ... [OPTIONS]
+Check temperature and notify if specified threshold reached
+OPTIONS:
+-h, --help          Show this help
+-o, --osdnotify     Determine use or not notify-osd for notifications
+-c, --chip          Set chip with information
+-n, --number        Number of temperature sensor
+-m, --max           Maximum temperature when script will notify you
+-e, --email         E-Mail to where send notification
+EOF
+}
+
+PARSEDOPTS=$(getopt -n "$0" \
+    -o h,c:,n:m:,e:,o, \
+    --long "help,chip:,number:,max:,email:,osdnotify" \
+    -- "$@"
+)
+
+eval set -- "$PARSEDOPTS"
+
+while true; do
+    case "$1" in
+        -h|--help)
+            usage
+            exit 0
+            shift;;
+        -c|--chip)
+            CHIP="$2"
+            shift 2;;
+        -n|--number)
+            NUM="$2"
+            shift 2;;
+        -m|--max)
+            MAX="$2"
+            shift 2;;
+        -e|--email)
+            EMAIL="$2"
+            shift 2;;
+        -o|--osdnotify)
+            osdnotify=true
+            shift;;
+        --)
+            shift
+            break;;
+        esac
+done
+
+( ! have "sensors" ) && die "No sensors found in system. Install them first"
+temp=$(sensors "$CHIP" | grep temp"$NUM" | cut -d + -f 2 | cut -d . -f1)
+
+[[ "$temp" -ge "$MAX" ]] \
+        && notify "Temperature reached the maximum! MAX: "$MAX" CURRENT: "$temp"" && exit 0
